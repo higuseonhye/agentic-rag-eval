@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.db import get_db
 from app.router.adaptive_router import classify_request
+from app.workflows.multi_agent_reference import run_multi_agent_incident
 from app.workflows.orchestrator import run_adw_workflow
 
 
@@ -25,6 +26,10 @@ class RunResponse(BaseModel):
     route_label: str
     route_score: float
     budgets: dict[str, Any]
+
+
+class MultiAgentRunResponse(BaseModel):
+    run_id: str
 
 
 @router.post("", response_model=RunResponse)
@@ -47,3 +52,10 @@ def execute_run(payload: RunRequest, db: Session = Depends(get_db)) -> RunRespon
             "retrieval_mode": b.retrieval_mode,
         },
     )
+
+
+@router.post("/multi-agent", response_model=MultiAgentRunResponse)
+def execute_multi_agent(payload: RunRequest, db: Session = Depends(get_db)) -> MultiAgentRunResponse:
+    """Reference LangGraph multi-agent workflow (incident analysis subgraph chain)."""
+    out = run_multi_agent_incident(db=db, user_request=payload.user_request)
+    return MultiAgentRunResponse(run_id=out["run_id"])

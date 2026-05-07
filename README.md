@@ -8,6 +8,10 @@ Developer-first evaluation + observability platform for **Agentic RAG workflows*
 
 ### Demo screenshots
 
+Product demo:
+
+![Product demo](docs/screenshots/product-demo.png)
+
 Home:
 
 ![Home](docs/screenshots/home.png)

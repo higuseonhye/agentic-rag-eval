@@ -1,1 +1,1 @@
-__all__: list[str] = []
+"""Knowledge engine package (compilation, routing helpers)."""

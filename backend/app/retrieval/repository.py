@@ -42,6 +42,26 @@ class RetrievalRepository:
             self.db.refresh(c)
         return chunks
 
+    def add_chunks_per_meta(
+        self,
+        *,
+        doc_id: str,
+        chunk_texts: list[str],
+        chunk_metas: list[dict[str, Any] | None] | None = None,
+    ) -> list[Chunk]:
+        chunks: list[Chunk] = []
+        metas = chunk_metas or [None] * len(chunk_texts)
+        if len(metas) != len(chunk_texts):
+            raise ValueError("chunk_metas length must match chunk_texts")
+        for idx, text in enumerate(chunk_texts):
+            c = Chunk(doc_id=doc_id, index_in_doc=idx, text=text, meta=metas[idx])
+            self.db.add(c)
+            chunks.append(c)
+        self.db.commit()
+        for c in chunks:
+            self.db.refresh(c)
+        return chunks
+
     def list_documents(self, *, limit: int = 50) -> list[Document]:
         return self.db.execute(select(Document).order_by(Document.created_at.desc()).limit(limit)).scalars().all()
 

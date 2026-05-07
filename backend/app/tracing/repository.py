@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.tracing.models import AgentStep, TraceRun
@@ -79,6 +79,10 @@ class TraceRepository:
             "token_usage": run.token_usage,
             "cost_usd": run.cost_usd,
         }
+
+    def next_step_index(self, run_id: str) -> int:
+        val = self.db.execute(select(func.max(AgentStep.step_index)).where(AgentStep.run_id == run_id)).scalar()
+        return int(val if val is not None else -1) + 1
 
     def list_steps(self, run_id: str) -> list[dict[str, Any]]:
         steps = (

@@ -47,6 +47,37 @@ class Neo4jGraphStore:
                 entities=entities[:80],
             )
 
+    def link_unit_to_chunk(self, *, unit_id: str, chunk_id: str) -> None:
+        if not self.available:
+            return
+        with self._driver.session() as session:
+            session.run(
+                """
+                MERGE (u:KnowledgeUnit {unit_id: $unit_id})
+                MERGE (c:Chunk {chunk_id: $chunk_id})
+                MERGE (u)-[:CITES]->(c)
+                """,
+                unit_id=unit_id,
+                chunk_id=chunk_id,
+            )
+
+    def link_artifact_segment(self, *, artifact_id: str, chunk_like_id: str, label: str = "HAS_SEGMENT") -> None:
+        """Link multimodal transcript/keyframe pseudo-chunks into the graph."""
+        if not self.available:
+            return
+        with self._driver.session() as session:
+            session.run(
+                """
+                MERGE (a:Artifact {artifact_id: $artifact_id})
+                MERGE (s:Chunk {chunk_id: $chunk_id})
+                MERGE (a)-[r:HAS_SEGMENT]->(s)
+                SET r.label = $label
+                """,
+                artifact_id=artifact_id,
+                chunk_id=chunk_like_id,
+                label=label,
+            )
+
     def neighbor_chunk_ids(self, seed_ids: list[str], *, limit: int = 8) -> list[str]:
         if not self.available or not seed_ids:
             return []
