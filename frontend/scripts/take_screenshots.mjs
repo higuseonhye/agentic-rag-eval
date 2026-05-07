@@ -3,7 +3,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 // Prefer IPv4 loopback because some environments refuse IPv6 localhost.
-const baseUrl = process.env.BASE_URL ?? "http://127.0.0.1:3999";
+// Allow overriding via argv: `node take_screenshots.mjs http://127.0.0.1:4000`
+const baseUrl = process.argv[2] ?? process.env.BASE_URL ?? "http://127.0.0.1:3999";
 const outDir = process.env.OUT_DIR ?? path.resolve(process.cwd(), "..", "docs", "screenshots");
 
 async function main() {
