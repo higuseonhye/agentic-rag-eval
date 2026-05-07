@@ -11,8 +11,11 @@ orjson>=3.10
 # Agent orchestration
 langgraph>=0.2
 
-# Retrieval (client-side; Chroma server via docker-compose)
+# Retrieval
 chromadb>=0.5.5
+qdrant-client>=1.11
+fastembed>=0.4.0
+neo4j>=5.26
 
 # Eval (scaffold)
 deepeval>=2.0

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -19,18 +21,29 @@ class RunRequest(BaseModel):
 class RunResponse(BaseModel):
     run_id: str
     task_id: str
+    route_level: int
     route_label: str
     route_score: float
+    budgets: dict[str, Any]
 
 
 @router.post("", response_model=RunResponse)
 def execute_run(payload: RunRequest, db: Session = Depends(get_db)) -> RunResponse:
     route = classify_request(payload.user_request)
     result = run_adw_workflow(db=db, user_request=payload.user_request, route=route)
+    b = route.budgets
     return RunResponse(
         run_id=result["run_id"],
         task_id=result["task_id"],
+        route_level=route.level,
         route_label=route.label,
         route_score=route.score,
+        budgets={
+            "max_retrieval_iterations": b.max_retrieval_iterations,
+            "max_workflow_iterations": b.max_workflow_iterations,
+            "max_tools": b.max_tools,
+            "latency_budget_ms": b.latency_budget_ms,
+            "use_graph": b.use_graph,
+            "retrieval_mode": b.retrieval_mode,
+        },
     )
-
