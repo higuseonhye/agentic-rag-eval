@@ -2,6 +2,20 @@
 
 Developer-first evaluation + observability platform for **Agentic RAG workflows**: execution tracing, process-aware scoring, and trajectory visualization.
 
+### Demo screenshots
+
+Home:
+
+![Home](docs/screenshots/home.png)
+
+Traces (list):
+
+![Traces](docs/screenshots/traces.png)
+
+Evaluations:
+
+![Evaluations](docs/screenshots/evaluations.png)
+
 ### What’s in the MVP
 - **Backend**: FastAPI + SQLAlchemy + Postgres + Redis (Celery-ready)
 - **Agent orchestration**: LangGraph workflow that emits **step-level traces**
