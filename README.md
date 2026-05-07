@@ -4,25 +4,25 @@ Developer-first evaluation + observability platform for **Agentic RAG workflows*
 
 ### Architecture
 
-![Architecture](docs/architecture.svg)
+![Architecture](./docs/architecture.svg)
 
 ### Demo screenshots
 
 Product demo:
 
-![Product demo](docs/screenshots/product-demo.png)
+![Product demo](./docs/screenshots/product-demo.png)
 
 Home:
 
-![Home](docs/screenshots/home.png)
+![Home](./docs/screenshots/home.png)
 
 Traces (list):
 
-![Traces](docs/screenshots/traces.png)
+![Traces](./docs/screenshots/traces.png)
 
 Evaluations:
 
-![Evaluations](docs/screenshots/evaluations.png)
+![Evaluations](./docs/screenshots/evaluations.png)
 
 ### What’s in the MVP
 - **Backend**: FastAPI + SQLAlchemy + Postgres + Redis (Celery-ready)
