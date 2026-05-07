@@ -1,0 +1,31 @@
+flowchart TD
+  UserRequest[UserRequest] --> Router[AdaptiveRouter_L0toL4]
+
+  Router -->|L0_NoRetrieval| DirectLLM[DirectResponse]
+  Router -->|L1_Semantic| Dense[DenseRetrieval_VectorStore]
+  Router -->|L2_Hybrid| Hybrid[HybridRetrieval_FTSPlusDensePlusRerank]
+  Router -->|L3_AgenticRAG| AgenticRAG[IterativeRetrieve_Reflect_Correct]
+  Router -->|L4_ADW| ADW[StatefulWorkflowOrchestrator]
+
+  subgraph knowledgeEngine [KnowledgeEngine]
+    Ingest[Ingest_Parse] --> Chunk[Chunk_Metadata]
+    Chunk --> SparseIndex[Postgres_FTS]
+    Chunk --> VectorIndex[VectorStore_Qdrant_or_Chroma]
+    Chunk --> Entities[EntityExtraction_heuristic]
+    Entities --> GraphIndex[Neo4j_EntityGraph]
+  end
+
+  Dense --> VectorIndex
+  Hybrid --> SparseIndex
+  Hybrid --> VectorIndex
+  AgenticRAG --> Hybrid
+
+  ADW --> Hybrid
+  ADW --> GraphIndex
+
+  AgenticRAG --> Eval[ProcessAwareEvaluation]
+  ADW --> Eval
+  Eval --> TraceStore[TraceRun_AgentStep_EvalResult]
+  ADW --> StateStore[WorkflowStateStore_Postgres]
+  ADW --> Memory[AgenticMemoryLayer_future]
+

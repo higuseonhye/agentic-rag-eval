@@ -2,6 +2,10 @@
 
 Developer-first evaluation + observability platform for **Agentic RAG workflows**: execution tracing, process-aware scoring, and trajectory visualization.
 
+### Architecture
+
+![Architecture](docs/architecture.svg)
+
 ### Demo screenshots
 
 Home:
